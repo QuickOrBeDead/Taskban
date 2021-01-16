@@ -18,6 +18,10 @@
         <converters:SubTasksToStringConverter x:Key="ToStringConverter" />
         <converters:StringToColorConverter x:Key="StringToColorConverter" />
         <converters:FromNumberToVisibilityConverter x:Key="FromNumberToVisibilityConverter" />
+        <converters:StringToVisibleIfNotNullOrWhiteSpaceConverter x:Key="StringToVisibleIfNotNullOrWhiteSpaceConverter" />
+        <converters:StringToVisibleIfNullOrWhiteSpaceConverter x:Key="StringToVisibleIfNullOrWhiteSpaceConverter" />
+        <converters:FilePathToFileNameConverter x:Key="FilePathToFileNameConverter" />
+        <converters:FilePathToIconConverter x:Key="FilePathToIconConverter" />
     </mah:MetroWindow.Resources>
     <mah:MetroWindow.LeftWindowCommands>
         <mah:WindowCommands>
@@ -208,6 +212,23 @@
                                      AcceptsReturn="True"
                                      mah:TextBoxHelper.Watermark="Notes"
                                      MinLines="3" />
+                            <TextBlock TextWrapping="Wrap">
+                                <Image Width="16"
+                                       Height="16" 
+                                       Source="{Binding SelectedTask.FilePath, Converter={StaticResource FilePathToIconConverter}}" 
+                                       mah:VisibilityHelper.IsVisible="{Binding SelectedTask.FilePath, Converter={StaticResource StringToVisibleIfNotNullOrWhiteSpaceConverter}}"/>
+                                <Hyperlink
+                                    ToolTip="{Binding SelectedTask.FilePath}"
+                                    Click="AddFileLinkButton_Click"
+                                    mah:VisibilityHelper.IsVisible="{Binding SelectedTask.FilePath, Converter={StaticResource StringToVisibleIfNotNullOrWhiteSpaceConverter}}">
+                                    <Run Text="{Binding SelectedTask.FilePath, Converter={StaticResource FilePathToFileNameConverter}}" />
+                                </Hyperlink>
+                                <Button 
+                                    Click="AddFileLinkButton_Click"
+                                    mah:VisibilityHelper.IsVisible="{Binding SelectedTask.FilePath, Converter={StaticResource StringToVisibleIfNullOrWhiteSpaceConverter}}">
+                                    Add File Link
+                                </Button>
+                            </TextBlock>
                             <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                      ScrollViewer.VerticalScrollBarVisibility="Disabled" />
                         </StackPanel>
@@ -222,6 +243,7 @@
                                  AutoGenerateColumns="False"
                                  ColumnMappingPath="Category"
                                  CardTapped="SfKanban_OnCardTapped"
+                                 CardDragEnd="SfKanban_OnCardDragEnd"
                                  ItemsSource="{Binding Board.Tasks}">
                 <syncfusion:SfKanban.ColumnHeaderTemplate>
                     <DataTemplate DataType="syncfusion:ColumnTag">
@@ -282,7 +304,8 @@
                                          HorizontalAlignment="Left"
                                          Text="{Binding Description}"
                                          MaxLines="3"
-                                         TextWrapping="Wrap" />
+                                         TextWrapping="Wrap"
+                                         mah:VisibilityHelper.IsVisible="{Binding Description, Converter={StaticResource StringToVisibleIfNotNullOrWhiteSpaceConverter}}"/>
                                 <ItemsControl ItemsSource="{Binding Tags}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
@@ -301,6 +324,21 @@
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
+                                <TextBlock mah:VisibilityHelper.IsVisible="{Binding FilePath, Converter={StaticResource StringToVisibleIfNotNullOrWhiteSpaceConverter}}">
+
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap" HorizontalAlignment="Left">
+                                    <Image Width="16"
+                                           Height="16" 
+                                           Source="{Binding FilePath, Converter={StaticResource FilePathToIconConverter}}" 
+                                           mah:VisibilityHelper.IsVisible="{Binding FilePath, Converter={StaticResource StringToVisibleIfNotNullOrWhiteSpaceConverter}}"/>
+                                    <Hyperlink
+                                        ToolTip="{Binding FilePath}"
+                                        Click="OpenFileLinkButton_Click"
+                                        mah:VisibilityHelper.IsVisible="{Binding FilePath, Converter={StaticResource StringToVisibleIfNotNullOrWhiteSpaceConverter}}">
+                                        <Run Text="{Binding FilePath, Converter={StaticResource FilePathToFileNameConverter}}" />
+                                    </Hyperlink>
+                                </TextBlock>
                             </StackPanel>
                         </Border>
                     </DataTemplate>
