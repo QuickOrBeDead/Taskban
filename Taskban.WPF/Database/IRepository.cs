@@ -11,5 +11,7 @@ namespace Taskban.WPF.Database
         TEntity Insert(TEntity entity);
         void Update(TEntity entity);
         void Delete(object id);
+
+        bool ExistsById(object id);
     }
 }

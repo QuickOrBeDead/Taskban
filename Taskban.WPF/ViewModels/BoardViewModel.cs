@@ -92,18 +92,24 @@ namespace Taskban.WPF.ViewModels
         {
             Board.Tasks.Remove(SelectedTask);
             TaskViewWidth = 0;
+
+            SaveBoard(null);
         }
 
         private void AddNewSubTask(object parameter)
         {
             SelectedTask.SubTasks.Add(new SubTask {Completed = NewSubTask.Completed, Title = NewSubTask.Title});
             BoardWindow.ClearSubTaskEntry();
+
+            SaveBoard(null);
         }
 
         private void AddNewTag(object parameter)
         {
             SelectedTask.Tags.Add(new Tag {Name = parameter.ToString()});
             BoardWindow.ClearTaskTagEntry();
+
+            SaveBoard(null);
         }
 
         private void AddTask(object parameter)
@@ -112,12 +118,14 @@ namespace Taskban.WPF.ViewModels
             {
                 BoardId = Board.Id, Category = (string) parameter, CreatedAt = DateTime.Now,
                 Description = "", Title = "", SubTasks = new ObservableCollection<SubTask>(),
-                Priority = "None", Tags = new ObservableCollection<Tag>()
+                Priority = "None", Tags = new ObservableCollection<Tag>(), FilePath = ""
             };
 
             Board.Tasks.Insert(0, task);
             SelectedTask = task;
             TaskViewWidth = 250;
+
+            SaveBoard(null);
         }
 
         public void SaveBoard(object parameter)

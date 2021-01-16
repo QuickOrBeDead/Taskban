@@ -1,10 +1,11 @@
-﻿using Taskban.WPF.Commands;
-using Taskban.WPF.Entities;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
-
-namespace Taskban.WPF.ViewModels
+﻿namespace Taskban.WPF.ViewModels
 {
+    using System.Collections.ObjectModel;
+    using System.Windows.Input;
+
+    using Taskban.WPF.Commands;
+    using Taskban.WPF.Entities;
+
     public class MainViewModel : ViewModelBase
     {
         public ObservableCollection<Board> ListBoxSource { get; set; }
@@ -39,17 +40,29 @@ namespace Taskban.WPF.ViewModels
         private readonly HomeViewModel _homeViewModel;
         private readonly NewBoardViewModel _boardViewModel;
 
+        private readonly AppStates _appStates;
+
         public MainViewModel()
         {
             _homeViewModel = new HomeViewModel(GoToBoardView);
             _boardViewModel = new NewBoardViewModel(GoToHomeView);
+            _appStates = App.UnitOfWork.AppStates.GetById(AppStates.AppStatesId);
 
             CurrentViewModel = _homeViewModel;
 
-            OpenBoardCommand = new RelayCommand(o => App.WindowService.ShowBoard(SelectedBoard), o => true);
+            OpenBoardCommand = new RelayCommand(OpenBoard, o => true);
             DeleteBoardCommand = new RelayCommand(DeleteBoard, o => true);
 
             ListBoxSource = new ObservableCollection<Board>(App.UnitOfWork.Boards.Get(orderBy: board => board.CreatedAt, ascending: false));
+        }
+
+        private void OpenBoard(object parameter)
+        {
+            var selectedBoard = SelectedBoard;
+            App.WindowService.ShowBoard(selectedBoard);
+
+            _appStates.LastBoardId = selectedBoard.Id;
+            App.UnitOfWork.AppStates.Update(_appStates);
         }
 
         private void GoToBoardView()

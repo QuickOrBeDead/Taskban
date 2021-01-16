@@ -1,24 +1,26 @@
-﻿using LiteDB;
-using Taskban.WPF.Entities;
-
-namespace Taskban.WPF.Database
+﻿namespace Taskban.WPF.Database
 {
-    public class UnitOfWork : IUnitOfWork
+    using LiteDB;
+
+    using Taskban.WPF.Entities;
+
+    public sealed class UnitOfWork : IUnitOfWork
     {
-        private const string Name = "taskban.db";
+        private const string DB_NAME = "taskban.db";
+
         public IRepository<Board> Boards { get; }
 
-        //public IRepository<Task> Tasks { get; }
-
-        //public IRepository<Settings> Settings { get; }
+        /// <inheritdoc />
+        public IRepository<AppStates> AppStates { get; }
 
         private readonly ILiteDatabase _database;
 
         public UnitOfWork()
         {
-            _database = new LiteDatabase(Name);
+            _database = new LiteDatabase(DB_NAME);
 
-            Boards = new BaseRepository<Board>(_database, "Boards");
+            Boards = new BaseRepository<Board>(_database, nameof(Boards));
+            AppStates = new BaseRepository<AppStates>(_database, nameof(AppStates));
         }
 
         public void Dispose()

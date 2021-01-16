@@ -43,6 +43,11 @@ namespace Taskban.WPF.Database
             return _collection.FindOne($"$._id = {id}");
         }
 
+        public bool ExistsById(object id)
+        {
+            return _collection.Exists($"$._id = {id}");
+        }
+
         public TEntity Insert(TEntity entity)
         {
             var result = _collection.Insert(entity);

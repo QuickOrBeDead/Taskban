@@ -6,5 +6,7 @@ namespace Taskban.WPF.Database
     public interface IUnitOfWork : IDisposable
     {
         IRepository<Board> Boards { get; }
+
+        IRepository<AppStates> AppStates { get; }
     }
 }
